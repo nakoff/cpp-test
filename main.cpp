@@ -1,34 +1,25 @@
-#pragma once
+
 #include <iostream>
 #include <cstdio>
 #include <string>
 
-using namespace std;
 const char* MESSAGES[3] = {"SUCCESS!", "FAIL!", "BAD ARGUMENTS!"};
-enum {SUCCESS = 0, FAIL, BAD_ARG} results;
-//int result
+enum {SUCCESS = 0, FAIL, BAD_ARG};
+
+using namespace std;
 
 bool checkParameter(string parameter, string invalidChars = ""){
-    cout<<parameter.length()<<"\n";
-    for (int i; i < parameter.length(); i++){
-        cout<<i;
-        printf("CHECK!");
+    for (int i=0; i < parameter.length(); i++){
         //cout<<parameters.at(i)<<"\n";
         char symbol = parameter.at(i);
-        printf((char*)symbol);
-        for (int j; j < invalidChars.length(); j++){
+        for (int j=0; j < invalidChars.length(); j++){
             if (symbol == invalidChars.at(j)){
-                printf("BAD!!!\n");
                 return false;
             }
-        }
-        if (symbol == '\\'){
-            symbol = '/';
         }
     }
     return true;
 }
-
 
 int main(int argc, char *argv[]){
     if (argc < 3){
@@ -36,31 +27,57 @@ int main(int argc, char *argv[]){
         return BAD_ARG;
     }
 
-
     string fileName = argv[1];
     string templ = argv[2];
 
-    for (int i; i < fileName.length(); i++){
-        printf("!!!");
-        string invalidChars = "*?";
-        char symbol = fileName.at(i);
-        printf((char*)symbol);
-//        for (int j; j < invalidChars.length(); j++){
-//            if (symbol == invalidChars.at(j)){
-//                printf("BAD!!!\n");
-//                return false;
-//            }
-//        }
-        if (symbol == '\\'){
-            symbol = '/';
-        }
-    }
-    /*if (!checkParameter(fileName, "*?") || !checkParameter(templ)){
+    if (!checkParameter(fileName, "*?") || !checkParameter(templ)){
         cout<<MESSAGES[BAD_ARG]<<"\n";
         return BAD_ARG;
-    }*/
+    }
 
-    cout<<argv[1]<<"\n"<<argv[2]<<"\n";
+    int tmPos = -1;
+    int fnPos = 0;
+
+
+    for (int i=0; i<templ.length(); i++){
+        //cout<<fnPos<<" FNPOS\n";
+        char tmSymbol = templ.at(i);
+        char fnSymbol = fileName.at(fnPos);
+
+ 
+        cout<<"----------->> "<<tmSymbol<<" <<-----------\n";
+
+        if (tmSymbol == '*'){
+            tmPos = i;
+            for (int pos=fnPos; pos<fileName.length(); pos++){
+                //если символ = следующий оператор
+                if (i<templ.length()-1 && fileName.at(pos) == templ.at(i+1)){
+                    break;
+                }
+                if (fnPos<fileName.length()-1){
+                    if (fileName.at(fnPos) != '/'){
+                        fnPos ++;
+                        continue;
+                    }
+                    else{
+                        fnPos ++;
+                        break;
+                    }
+                }
+            }
+        }
+        else if (fnSymbol == tmSymbol || tmSymbol == '?'){
+            fnPos ++;
+            tmPos ++;
+            continue;
+        }
+        else{
+            cout<<MESSAGES[FAIL]<<"\n";
+            exit(FAIL);
+        }
+
+    }
+
     cout<<MESSAGES[SUCCESS]<<"\n";
     return SUCCESS;
 }
