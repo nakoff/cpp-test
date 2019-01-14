@@ -45,34 +45,42 @@ int main(int argc, char *argv[]){
         char fnSymbol = fileName.at(fnPos);
 
  
-        cout<<"----------->> "<<tmSymbol<<" <<-----------\n";
+        cout<<"----------->> "<<tmSymbol<<" "<<fnSymbol<<" <<-----------\n";
 
         if (tmSymbol == '*'){
-            tmPos = i;
             for (int pos=fnPos; pos<fileName.length(); pos++){
                 //если символ = следующий оператор
                 if (i<templ.length()-1 && fileName.at(pos) == templ.at(i+1)){
+                    tmPos = pos+1; //TODO
+                    break;
+                }
+                if (fileName.at(pos) == '/'){
+                    tmPos = pos;
                     break;
                 }
                 if (fnPos<fileName.length()-1){
-                    if (fileName.at(fnPos) != '/'){
-                        fnPos ++;
-                        continue;
-                    }
-                    else{
-                        fnPos ++;
-                        break;
-                    }
+                    fnPos++;
+                    continue;
                 }
             }
         }
-        else if (fnSymbol == tmSymbol || tmSymbol == '?'){
+        // TODO
+        else if (tmSymbol == '?'){
+            if (tmPos > -1 && tmPos-1 < fileName.length()){
+                cout<<fileName.at(tmPos-1)<<" ////\n";
+                if (fileName.at(tmPos-1) != '/'){
+                    tmPos--;
+                    cout<<"cntn\n";
+                    continue;
+                }
+            }
+            fnPos++;
+        }
+        else if (fnSymbol == tmSymbol){
             fnPos ++;
-            tmPos ++;
-            continue;
         }
         else{
-            cout<<MESSAGES[FAIL]<<"\n";
+            cout<<MESSAGES[FAIL]<<" "<<tmSymbol<<"\n";
             exit(FAIL);
         }
 
