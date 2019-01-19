@@ -121,10 +121,8 @@ int main(int argc, char *argv[]){
     }
     
     if (templPos < templ.length()){
-        if (templ.at(templPos) != '*'){
-            cout<<MESSAGES[FAIL]<<" 3\n";
-            exit (FAIL);
-        }
+        cout<<MESSAGES[FAIL]<<" 3\n";
+        exit (FAIL);
     }
 
     cout<<MESSAGES[SUCCESS]<<endl;
